@@ -7,7 +7,7 @@ const userSchema = new Schema({
   email: { type: Types.String, unique: true, lowercase: true },
   password: Types.String,
   firstName: Types.String,
-  lastName: Types.String,
+  lastName: Types.String
 })
 
 userSchema.virtual('fullName').get((...args) => {

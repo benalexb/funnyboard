@@ -9,7 +9,7 @@ const boardSchema = new Schema({
     ref: 'user',
     index: true
   },
-  members: [{ type: Types.ObjectId, ref: 'user' }],
+  members: [{ type: Types.ObjectId, ref: 'user' }]
 })
 
 export default boardSchema

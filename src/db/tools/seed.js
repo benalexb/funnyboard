@@ -38,16 +38,14 @@ const COLUMNS = [
   },
   {
     title: 'Works for us',
-    description: 'What should we continue doing?',
+    description: 'What should we continue doing?'
   },
   {
     title: 'Requires Improvement',
-    description: 'What should we do differently?',
+    description: 'What should we do differently?'
   },
   {
     title: 'Suggestions',
-    description: 'No idea is a bad idea',
+    description: 'No idea is a bad idea'
   }
 ]
-
-
