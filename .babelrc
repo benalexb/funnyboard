@@ -1,13 +1,15 @@
 {
   "presets": [
     [
-      "env",
+      "next/babel",
       {
-        "targets": {
-          "node": "current"
+        "preset-env": {
+          "targets": {
+            "node": "current"
+          }
         }
       }
-    ],
-    "jest"
-  ]
+    ]
+  ],
+  "plugins": ["@babel/plugin-transform-react-jsx"]
 }
