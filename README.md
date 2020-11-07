@@ -1,11 +1,28 @@
 ## Getting Started
 
+### Requirements
+* nodejs v12.18.0
+* npm v6.14.8
+* Docker
+
+### First-time setup
 ```bash
 # Install dependencies
 npm install
+# Start mongodb
+npm run db:up
+# Run the database seeding script to generate some mock data
+npm run db:seed
+```
 
-# Run development server
+### How do I run the application for local development?
+```bash
 npm run dev
+```
+
+### How do I stop the database?
+```bash
+npm run db:down
 ```
 
 Development page found at [http://localhost:3000](http://localhost:3000)
