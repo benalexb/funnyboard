@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
-import { chunk } from 'lodash'
+import faker from 'faker'
+import { chunk, range, random } from 'lodash'
 import { config as dbConnectionConfig } from '../connectionConfig'
 import { getModels } from '../models'
 import { resetModelCollection, getPasswordHash } from './utils'
@@ -58,10 +59,36 @@ const COLUMNS = [
   }
 ]
 
+const announce = (message) => console.log(`\n# ${message} #\n`)
+
 const handleError = (error) => {
   mongooseConnection && mongooseConnection.close()
   console.error(error)
   process.exit(1)
+}
+
+const insertStickies = async (models, insertedColumns) => {
+  try {
+    const insertionData = insertedColumns.reduce((acc, column) => {
+      // Insert 1 to 10 stickies
+      range(random(1, 10)).forEach((position) => {
+        acc.push({
+          // Set a title to a random lorem ipsum sentence of 1 to 4 words
+          title: faker.lorem.words(random(1, 4)),
+          // Set a description to a random lorem ipsum sentence of 3 to 16 words
+          description: faker.lorem.sentence(random(3, 16)),
+          position,
+          column
+        })
+      })
+      return acc
+    }, [])
+    const insertion = await models.Stickie.insertMany(insertionData)
+    console.log(`Inserted ${insertion.length} Stickie records`)
+    return insertion
+  } catch (error) {
+    handleError(error)
+  }
 }
 
 const insertColumns = async (models, insertedBoards) => {
@@ -130,18 +157,18 @@ const runDBTasks = async () => {
     const models = getModels(mongooseConnection)
 
     // Keep in mind the order in which collections are reset matters.
-    console.log('\nRemoving old records\n')
+    announce('Removing old records')
     await resetModelCollection(models.Stickie)
     await resetModelCollection(models.Column)
     await resetModelCollection(models.Board)
     await resetModelCollection(models.User)
 
     // Insert mock data
-    console.log('\nInserting mock data\n')
+    announce('Inserting mock data')
     const insertedUsers = await insertUsers(models)
     const insertedBoards = await insertBoards(models, insertedUsers)
-    // const insertedColumns = await insertColumns(models, insertedBoards)
-    await insertColumns(models, insertedBoards)
+    const insertedColumns = await insertColumns(models, insertedBoards)
+    await insertStickies(models, insertedColumns)
 
     // Close the database connection and exit the process.
     mongooseConnection.close()

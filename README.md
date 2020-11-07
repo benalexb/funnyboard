@@ -9,8 +9,10 @@
 ```bash
 # Install dependencies
 npm install
+
 # Start mongodb
 npm run db:up
+
 # Run the database seeding script to generate some mock data
 npm run db:seed
 ```
@@ -19,6 +21,7 @@ npm run db:seed
 ```bash
 # Start mongodb
 npm run db:up
+
 # Start dev server
 npm run dev
 ```
