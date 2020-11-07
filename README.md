@@ -17,6 +17,9 @@ npm run db:seed
 
 ### How do I run the application for local development?
 ```bash
+# Start mongodb
+npm run db:up
+# Start dev server
 npm run dev
 ```
 

@@ -39,29 +39,50 @@ const BOARDS = [
   'Species 8472 Bio-Ship'
 ]
 
-// const COLUMNS = [
-//   {
-//     title: 'Action Items',
-//     description: ''
-//   },
-//   {
-//     title: 'Works for us',
-//     description: 'What should we continue doing?'
-//   },
-//   {
-//     title: 'Requires Improvement',
-//     description: 'What should we do differently?'
-//   },
-//   {
-//     title: 'Suggestions',
-//     description: 'No idea is a bad idea'
-//   }
-// ]
+const COLUMNS = [
+  {
+    title: 'Action Items',
+    description: ''
+  },
+  {
+    title: 'Works for us',
+    description: 'What should we continue doing?'
+  },
+  {
+    title: 'Requires Improvement',
+    description: 'What should we do differently?'
+  },
+  {
+    title: 'Suggestions',
+    description: 'No idea is a bad idea'
+  }
+]
 
 const handleError = (error) => {
   mongooseConnection && mongooseConnection.close()
   console.error(error)
   process.exit(1)
+}
+
+const insertColumns = async (models, insertedBoards) => {
+  try {
+    const insertionData = insertedBoards.reduce((acc, board) => {
+      COLUMNS.forEach(({ title, description }, index) => {
+        acc.push({
+          title,
+          description,
+          position: index,
+          board
+        })
+      })
+      return acc
+    }, [])
+    const insertion = await models.Column.insertMany(insertionData)
+    console.log(`Inserted ${insertion.length} Column records`)
+    return insertion
+  } catch (error) {
+    handleError(error)
+  }
 }
 
 const insertBoards = async (models, insertedUsers) => {
@@ -109,15 +130,18 @@ const runDBTasks = async () => {
     const models = getModels(mongooseConnection)
 
     // Keep in mind the order in which collections are reset matters.
+    console.log('\nRemoving old records\n')
     await resetModelCollection(models.Stickie)
     await resetModelCollection(models.Column)
     await resetModelCollection(models.Board)
     await resetModelCollection(models.User)
 
     // Insert mock data
+    console.log('\nInserting mock data\n')
     const insertedUsers = await insertUsers(models)
-    // const insertedBoards = await insertBoards(models, insertedUsers)
-    await insertBoards(models, insertedUsers)
+    const insertedBoards = await insertBoards(models, insertedUsers)
+    // const insertedColumns = await insertColumns(models, insertedBoards)
+    await insertColumns(models, insertedBoards)
 
     // Close the database connection and exit the process.
     mongooseConnection.close()
