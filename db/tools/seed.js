@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import faker from 'faker'
 import { chunk, range, random } from 'lodash'
-import { config as dbConnectionConfig } from '../connectionConfig'
+import dbConnectionConfig from '../connectionConfig'
 import { getModels } from '../models'
 import { resetModelCollection, getPasswordHash } from './utils'
 
