@@ -93,7 +93,7 @@ const typeDefs = gql`
     getUser(id: ID, email: String): User
     getBoards(id: ID, memberID: ID): [Board]
     getColumns(id: ID, board: ID): [Column]
-    getStickie(id: ID, column: ID): Stickie
+    getStickies(id: ID, column: ID): [Stickie]
   }
 
   type Mutation {
@@ -177,12 +177,26 @@ const getColumns = async (parent, args, context) => {
     .exec()
 }
 
+const getStickies = async (parent, args, context) => {
+  const { id: _id, column } = args
+  const queryProps = {
+    ...(_id && { _id }),
+    ...(column && { column: Types.ObjectId(column) })
+  }
+  return await context.models.Stickie
+    .find(queryProps)
+    // Sort by position in ascending order
+    .sort({ position: 1 })
+    .exec()
+}
+
 const resolvers = {
   Query: {
     login,
     getUser: requireAuth(getUser),
     getBoards: requireAuth(getBoards),
-    getColumns: requireAuth(getColumns)
+    getColumns: requireAuth(getColumns),
+    getStickies: requireAuth(getStickies)
   }
 }
 
