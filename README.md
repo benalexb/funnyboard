@@ -25,10 +25,9 @@ npm run db:up
 # Start dev server
 npm run dev
 ```
+Development page found at [http://localhost:3000](http://localhost:3000)
 
 ### How do I stop the database?
 ```bash
 npm run db:down
 ```
-
-Development page found at [http://localhost:3000](http://localhost:3000)

@@ -239,7 +239,7 @@ const addColumn = async (parent, args, context) => {
     newColumn = await newColumn.save()
     return models.Column.findOne({ _id: newColumn._id })
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return Promise.reject(error)
   }
 }
@@ -252,7 +252,58 @@ const addStickie = async (parent, args, context) => {
     newStickie = await newStickie.save()
     return models.Stickie.findOne({ _id: newStickie._id })
   } catch (error) {
-    console.log(error)
+    console.error(error)
+    return Promise.reject(error)
+  }
+}
+
+const updateBoard = async (parent, args, context) => {
+  try {
+    const { id, boardProps } = args
+    const { models } = context
+    const updatedBoard = await models.Board.findByIdAndUpdate(
+      id,
+      { ...boardProps },
+      { new: true }
+    )
+    return await models.Board
+      .findById(updatedBoard._id)
+      .populate('members')
+      .exec()
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
+  }
+}
+
+const updateColumn = async (parent, args, context) => {
+  try {
+    const { id, columnProps } = args
+    const { models } = context
+    const updatedColumn = await models.Column.findByIdAndUpdate(
+      id,
+      { ...columnProps },
+      { new: true }
+    )
+    return await models.Column.findById(updatedColumn._id)
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
+  }
+}
+
+const updateStickie = async (parent, args, context) => {
+  try {
+    const { id, stickieProps } = args
+    const { models } = context
+    const updatedStickie = await models.Stickie.findByIdAndUpdate(
+      id,
+      { ...stickieProps },
+      { new: true }
+    )
+    return await models.Stickie.findById(updatedStickie._id)
+  } catch (error) {
+    console.error(error)
     return Promise.reject(error)
   }
 }
@@ -266,9 +317,15 @@ const resolvers = {
     getStickies: requireAuth(getStickies)
   },
   Mutation: {
+    // Create
     addBoard: requireAuth(addBoard),
     addColumn: requireAuth(addColumn),
-    addStickie: requireAuth(addStickie)
+    addStickie: requireAuth(addStickie),
+
+    // Update
+    updateBoard: requireAuth(updateBoard),
+    updateColumn: requireAuth(updateColumn),
+    updateStickie: requireAuth(updateStickie)
   }
 }
 
