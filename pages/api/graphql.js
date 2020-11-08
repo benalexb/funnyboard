@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import { serialize } from 'cookie'
 import { ApolloServer, gql, AuthenticationError } from 'apollo-server-micro'
 import { getModels } from '../../db/models'
@@ -91,7 +91,7 @@ const typeDefs = gql`
   type Query {
     login(email: String, password: String): LoginResponse
     getUser(id: ID, email: String): User
-    getBoard(id: ID, memberID: ID): Board
+    getBoards(id: ID, memberID: ID): [Board]
     getColumn(id: ID, board: ID): Column
     getStickie(id: ID, column: ID): Stickie
   }
@@ -147,7 +147,6 @@ const login = async (parent, args, context) => {
 }
 
 const getUser = async (parent, args, context) => {
-  console.log('context.isAuth', context.isAuth) // bbarreto_debug
   const { id: _id, email } = args
   const user = await context.models.User.findOne({
     ...(_id && { _id }),
@@ -156,10 +155,20 @@ const getUser = async (parent, args, context) => {
   return user
 }
 
+const getBoards = async (parent, args, context) => {
+  const { id: _id, memberID } = args
+  const queryProps = {
+    ...(_id && { _id }),
+    ...(memberID && { members: Types.ObjectId(memberID) })
+  }
+  return await context.models.Board.find(queryProps).populate('members').exec()
+}
+
 const resolvers = {
   Query: {
     login,
-    getUser: requireAuth(getUser)
+    getUser: requireAuth(getUser),
+    getBoards: requireAuth(getBoards)
   }
 }
 
