@@ -11,9 +11,7 @@
 npm install
 
 # Start mongodb
-npm run db:up
-# Alternatively, you can also use docker-compose, such as
-docker-compose up
+docker-compose up -d
 
 # Run the database seeding script to generate some mock data
 npm run db:seed
@@ -22,8 +20,6 @@ npm run db:seed
 ### How do I run the application for local development?
 ```bash
 # Start mongodb
-npm run db:up
-# Or
 docker-compose up
 
 # Start dev server
