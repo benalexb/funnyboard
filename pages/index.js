@@ -15,7 +15,7 @@ const fetcher = (query, id) =>
 
 const IndexPage = () => {
   const [, , removeCookie] = useCookies(['token'])
-  const { data } = useSWR([getUser, '5fa7c193ce683c25192bb959'], fetcher)
+  const { data } = useSWR([getUser, '5fa8783597e9c42cb36de632'], fetcher)
   console.log('data', data) // bbarreto_debug
 
   return (

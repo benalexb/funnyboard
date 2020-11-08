@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import clsx from 'clsx'
 import useSWR from 'swr'
+import { useCookies } from 'react-cookie'
 import { useRouter } from 'next/router'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -60,6 +61,7 @@ const LoginError = () => {
 const LoginForm = () => {
   const router = useRouter()
   const classes = useStyles()
+  const [cookies, setCookie] = useCookies(['token'])
 
   const {
     errors,
@@ -79,6 +81,9 @@ const LoginForm = () => {
         setErrors({ auth: true })
         setPending(false)
       } else if (loginResponse && loginResponse.data) {
+        if (!cookies.token) {
+          setCookie('token', loginResponse.data.login.token)
+        }
         router.push('/')
         setPending(false)
       }
