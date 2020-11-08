@@ -1,29 +1,23 @@
 import React from 'react'
 import useSWR from 'swr'
+import { getUser } from '../src/queries'
 
-const fetcher = (body) =>
-  fetch('/api/graphql', {
-    body,
+const fetcher = (query, id) => {
+  console.log(JSON.stringify({ query, variables: { id } })) // bbarreto_debug
+  return fetch('/api/graphql', {
     method: 'POST',
-    headers: { 'Content-type': 'application/json' }
+    headers: {
+      'Content-type': 'application/json',
+      authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1ZmE3YzE5M2NlNjgzYzI1MTkyYmI5NTkiLCJpYXQiOjE2MDQ4NTg5NDc3NTR9.tktd1k23BUXnMAgckjdGcSftoviEt5GlKPw78qkKzts'
+    },
+    body: JSON.stringify({ query, variables: { id } })
   })
     .then((res) => res.json())
     .then((json) => json.data)
-
-const userQuery = `
-  query getUser($id: ID){
-    getUser(id: $id) {
-      _id
-    }
-  }
-`
+}
 
 export default function Index () {
-  const fetcherKey = JSON.stringify({
-    query: userQuery,
-    variables: { id: 'this_is_a_test' }
-  })
-  const { data, error } = useSWR(fetcherKey, fetcher)
+  const { data, error } = useSWR([getUser, '5fa7c193ce683c25192bb959'], fetcher)
 
   if (error) return <div>Failed to load</div>
   if (!data) return <div>Loading...</div>
