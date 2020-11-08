@@ -111,47 +111,55 @@ const typeDefs = gql`
   }
 `
 
+const requireAuth = (resolver) => (parent, args, context) => {
+  if (context.isAuth) {
+    return resolver(parent, args, context)
+  } else {
+    throw new AuthenticationError('invalid token provided')
+  }
+}
+
+const login = async (parent, args, context) => {
+  const { res, models } = context
+  const { email, password: pass } = args
+
+  // Attempt to retrieve user from the database
+  const user = await models.User.findOne({ email })
+  if (!user) {
+    throw new AuthenticationError('unknown user')
+  }
+
+  // Determine if retrieved user and password are a match
+  const isMatch = await user.comparePasswordAsync(pass)
+  if (!user || !isMatch) {
+    throw new AuthenticationError('permission denied')
+  }
+
+  // Strip password field from the response
+  const { password, ...userWithoutPassword } = user.toObject({ getters: true, virtuals: true })
+
+  // Get a token based on the user object
+  const token = tokenForUser(user)
+
+  // Store token in the cookie and return in it the response body
+  res.setHeader('Set-Cookie', serialize('token', token, { path: '/' }))
+  return { token, user: userWithoutPassword }
+}
+
+const getUser = async (parent, args, context) => {
+  console.log('context.isAuth', context.isAuth) // bbarreto_debug
+  const { id: _id, email } = args
+  const user = await context.models.User.findOne({
+    ...(_id && { _id }),
+    ...(email && { email })
+  })
+  return user
+}
+
 const resolvers = {
   Query: {
-    login: async (parent, args, context) => {
-      const { res, models } = context
-      const { email, password: pass } = args
-
-      // Attempt to retrieve user from the database
-      const user = await models.User.findOne({ email })
-      if (!user) {
-        throw new AuthenticationError('unknown user')
-      }
-
-      // Determine if retrieved user and password are a match
-      const isMatch = await user.comparePasswordAsync(pass)
-      if (!user || !isMatch) {
-        throw new AuthenticationError('permission denied')
-      }
-
-      // Strip password field from the response
-      const { password, ...userWithoutPassword } = user.toObject({ getters: true, virtuals: true })
-
-      // Get a token based on the user object
-      const token = tokenForUser(user)
-
-      // Store token in the cookie and return in it the response body
-      res.setHeader('Set-Cookie', serialize('token', token, { path: '/' }))
-      return { token, user: userWithoutPassword }
-    },
-    getUser (parent, args, context) {
-      console.log('context.isAuth', context.isAuth) // bbarreto_debug
-      console.log('context.user', context.user) // bbarreto_debug
-      return {
-        _id: '123fasfasdf',
-        firstName: 'dfasd f',
-        lastName: 'asdfasdfa',
-        email: 'dfasdf'
-      }
-    },
-    getBoard () {},
-    getColumn () {},
-    getStickie () {}
+    login,
+    getUser: requireAuth(getUser)
   }
 }
 
@@ -160,7 +168,7 @@ const apolloServer = new ApolloServer({
   resolvers,
   debug: isDev,
   context: async (context) => {
-    const { cookies, headers, body } = context.req
+    const { cookies, headers } = context.req
 
     let user
     let isAuth
@@ -183,11 +191,6 @@ const apolloServer = new ApolloServer({
         token = headers.authorization || headers.Authorization
       }
 
-      // Still without a token, check the request body as a last resort
-      if (!token) {
-        token = body.token
-      }
-
       // Attempt token extraction from request header
       [isAuth, user] = await isAuthenticated(token, models)
     } catch (error) {
@@ -204,8 +207,9 @@ const apolloServer = new ApolloServer({
   },
   formatResponse: (response, { context }) => {
     // Use this lifecycle method just to clean up things
-    const { mongooseConnection } = context
-    mongooseConnection && mongooseConnection.close()
+    if (context.mongooseConnection) {
+      context.mongooseConnection.close()
+    }
     return response
   }
 })
