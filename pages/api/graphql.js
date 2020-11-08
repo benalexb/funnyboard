@@ -92,7 +92,7 @@ const typeDefs = gql`
     login(email: String, password: String): LoginResponse
     getUser(id: ID, email: String): User
     getBoards(id: ID, memberID: ID): [Board]
-    getColumn(id: ID, board: ID): Column
+    getColumns(id: ID, board: ID): [Column]
     getStickie(id: ID, column: ID): Stickie
   }
 
@@ -148,11 +148,11 @@ const login = async (parent, args, context) => {
 
 const getUser = async (parent, args, context) => {
   const { id: _id, email } = args
-  const user = await context.models.User.findOne({
+  const queryProps = {
     ...(_id && { _id }),
     ...(email && { email })
-  })
-  return user
+  }
+  return await context.models.User.findOne(queryProps)
 }
 
 const getBoards = async (parent, args, context) => {
@@ -164,11 +164,25 @@ const getBoards = async (parent, args, context) => {
   return await context.models.Board.find(queryProps).populate('members').exec()
 }
 
+const getColumns = async (parent, args, context) => {
+  const { id: _id, board } = args
+  const queryProps = {
+    ...(_id && { _id }),
+    ...(board && { board: Types.ObjectId(board) })
+  }
+  return await context.models.Column
+    .find(queryProps)
+    // Sort by position in ascending order
+    .sort({ position: 1 })
+    .exec()
+}
+
 const resolvers = {
   Query: {
     login,
     getUser: requireAuth(getUser),
-    getBoards: requireAuth(getBoards)
+    getBoards: requireAuth(getBoards),
+    getColumns: requireAuth(getColumns)
   }
 }
 
