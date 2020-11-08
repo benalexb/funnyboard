@@ -1,3 +1,17 @@
+export const login = `
+  query login($email: String, $password: String) {
+    login(email: $email, password: $password) {
+        token
+        user {
+            _id
+            firstName
+            lastName
+            email
+        }
+    }
+  }
+`
+
 export const getUser = `
   query getUser($id: ID, $email: String){
     getUser(id: $id, email: $email) {

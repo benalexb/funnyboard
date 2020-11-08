@@ -16,22 +16,27 @@
     "db:seed": "babel-node db/tools/seed.js"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/pickers": "^3.2.10",
     "apollo-server-micro": "^2.19.0",
     "bcryptjs": "^2.4.3",
+    "clsx": "^1.1.1",
     "cookie": "^0.4.1",
     "graphql": "^15.4.0",
     "jwt-simple": "^0.5.6",
     "mongoose": "^5.10.13",
     "next": "10.0.1",
     "react": "17.0.1",
+    "react-cookie": "^4.0.3",
     "react-dom": "17.0.1",
     "swr": "^0.3.8"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
+    "@babel/eslint-parser": "^7.12.1",
     "@babel/node": "^7.12.6",
     "@babel/plugin-transform-react-jsx": "^7.12.5",
-    "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-jest": "^26.6.2",
@@ -47,7 +52,7 @@
     }
   },
   "standardx": {
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "env": [
       "jest"
     ],
@@ -55,7 +60,8 @@
       "fetch"
     ],
     "ignore": [
-      "node_modules"
+      "node_modules",
+      "styles.js"
     ]
   }
 }
