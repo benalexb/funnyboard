@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
-import { ApolloServer, gql } from 'apollo-server-micro'
+import { serialize } from 'cookie'
+import { ApolloServer, gql, AuthenticationError } from 'apollo-server-micro'
 import { getModels } from '../../db/models'
-import { isAuthenticated } from '../../db/tools/utils'
+import { isAuthenticated, tokenForUser } from '../../db/tools/utils'
 import dbConnectionConfig from '../../db/connectionConfig'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -112,7 +113,31 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    login (parent, args, context) {
+    login: async (parent, args, context) => {
+      const { res, models } = context
+      const { email, password: pass } = args
+
+      // Attempt to retrieve user from the database
+      const user = await models.User.findOne({ email })
+      if (!user) {
+        throw new AuthenticationError('unknown user')
+      }
+
+      // Determine if retrieved user and password are a match
+      const isMatch = await user.comparePasswordAsync(pass)
+      if (!user || !isMatch) {
+        throw new AuthenticationError('permission denied')
+      }
+
+      // Strip password field from the response
+      const { password, ...userWithoutPassword } = user.toObject({ getters: true, virtuals: true })
+
+      // Get a token based on the user object
+      const token = tokenForUser(user)
+
+      // Store token in the cookie and return in it the response body
+      res.setHeader('Set-Cookie', serialize('token', token, { path: '/' }))
+      return { token, user: userWithoutPassword }
     },
     getUser (parent, args, context) {
       console.log('context.isAuth', context.isAuth) // bbarreto_debug
@@ -135,7 +160,7 @@ const apolloServer = new ApolloServer({
   resolvers,
   debug: isDev,
   context: async (context) => {
-    const { headers } = context.req
+    const { cookies, headers, body } = context.req
 
     let user
     let isAuth
@@ -148,11 +173,23 @@ const apolloServer = new ApolloServer({
         process.env.DB_CONNECTION || 'mongodb://localhost:27017/funnyboard',
         dbConnectionConfig
       )
-      models = getModels(mongooseConnection);
+      models = getModels(mongooseConnection)
 
-      // bbarreto_dev: TODO first try extracting token from cookie, then header, then body
+      // First, try extracting the token from the cookie
+      let { token } = cookies
+
+      // If no token is retrieved from the cookie, check headers
+      if (!token) {
+        token = headers.authorization || headers.Authorization
+      }
+
+      // Still without a token, check the request body as a last resort
+      if (!token) {
+        token = body.token
+      }
+
       // Attempt token extraction from request header
-      [isAuth, user] = await isAuthenticated(headers.authorization || headers.Authorization, models)
+      [isAuth, user] = await isAuthenticated(token, models)
     } catch (error) {
       console.error(error)
     }
