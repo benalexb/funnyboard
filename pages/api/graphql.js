@@ -109,6 +109,9 @@ const resolvers = {
   Query: {
     login () {},
     getUser (parent, args, context) {
+      console.log('parent', parent) // bbarreto_debug
+      console.log('args', args) // bbarreto_debug
+      console.log('context', context) // bbarreto_debug
       return {
         _id: '123fasfasdf',
         firstName: 'dfasd f',
