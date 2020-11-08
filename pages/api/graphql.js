@@ -120,74 +120,141 @@ const requireAuth = (resolver) => (parent, args, context) => {
 }
 
 const login = async (parent, args, context) => {
-  const { res, models } = context
-  const { email, password: pass } = args
+  try {
+    const { res, models } = context
+    const { email, password: pass } = args
 
-  // Attempt to retrieve user from the database
-  const user = await models.User.findOne({ email })
-  if (!user) {
-    throw new AuthenticationError('unknown user')
+    // Attempt to retrieve user from the database
+    const user = await models.User.findOne({ email })
+    if (!user) {
+      throw new AuthenticationError('unknown user')
+    }
+
+    // Determine if retrieved user and password are a match
+    const isMatch = await user.comparePasswordAsync(pass)
+    if (!user || !isMatch) {
+      throw new AuthenticationError('permission denied')
+    }
+
+    // Strip password field from the response
+    const { password, ...userWithoutPassword } = user.toObject({ getters: true, virtuals: true })
+
+    // Get a token based on the user object
+    const token = tokenForUser(user)
+
+    // Store token in the cookie and return in it the response body
+    res.setHeader('Set-Cookie', serialize('token', token, { path: '/' }))
+    return { token, user: userWithoutPassword }
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
   }
-
-  // Determine if retrieved user and password are a match
-  const isMatch = await user.comparePasswordAsync(pass)
-  if (!user || !isMatch) {
-    throw new AuthenticationError('permission denied')
-  }
-
-  // Strip password field from the response
-  const { password, ...userWithoutPassword } = user.toObject({ getters: true, virtuals: true })
-
-  // Get a token based on the user object
-  const token = tokenForUser(user)
-
-  // Store token in the cookie and return in it the response body
-  res.setHeader('Set-Cookie', serialize('token', token, { path: '/' }))
-  return { token, user: userWithoutPassword }
 }
 
 const getUser = async (parent, args, context) => {
-  const { id: _id, email } = args
-  const queryProps = {
-    ...(_id && { _id }),
-    ...(email && { email })
+  try {
+    const { id: _id, email } = args
+    const queryProps = {
+      ...(_id && { _id }),
+      ...(email && { email })
+    }
+    return await context.models.User.findOne(queryProps)
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
   }
-  return await context.models.User.findOne(queryProps)
 }
 
 const getBoards = async (parent, args, context) => {
-  const { id: _id, memberID } = args
-  const queryProps = {
-    ...(_id && { _id }),
-    ...(memberID && { members: Types.ObjectId(memberID) })
+  try {
+    const { id: _id, memberID } = args
+    const queryProps = {
+      ...(_id && { _id }),
+      ...(memberID && { members: Types.ObjectId(memberID) })
+    }
+    return await context.models.Board.find(queryProps).populate('members').exec()
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
   }
-  return await context.models.Board.find(queryProps).populate('members').exec()
 }
 
 const getColumns = async (parent, args, context) => {
-  const { id: _id, board } = args
-  const queryProps = {
-    ...(_id && { _id }),
-    ...(board && { board: Types.ObjectId(board) })
+  try {
+    const { id: _id, board } = args
+    const queryProps = {
+      ...(_id && { _id }),
+      ...(board && { board: Types.ObjectId(board) })
+    }
+    return await context.models.Column
+      .find(queryProps)
+      // Sort by position in ascending order
+      .sort({ position: 1 })
+      .exec()
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
   }
-  return await context.models.Column
-    .find(queryProps)
-    // Sort by position in ascending order
-    .sort({ position: 1 })
-    .exec()
 }
 
 const getStickies = async (parent, args, context) => {
-  const { id: _id, column } = args
-  const queryProps = {
-    ...(_id && { _id }),
-    ...(column && { column: Types.ObjectId(column) })
+  try {
+    const { id: _id, column } = args
+    const queryProps = {
+      ...(_id && { _id }),
+      ...(column && { column: Types.ObjectId(column) })
+    }
+    return await context.models.Stickie
+      .find(queryProps)
+      // Sort by position in ascending order
+      .sort({ position: 1 })
+      .exec()
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
   }
-  return await context.models.Stickie
-    .find(queryProps)
-    // Sort by position in ascending order
-    .sort({ position: 1 })
-    .exec()
+}
+
+const addBoard = async (parent, args, context) => {
+  try {
+    const { board } = args
+    const { models } = context
+    let newBoard = new models.Board({ ...board })
+    newBoard = await newBoard.save()
+    return models.Board
+      .findOne({ _id: newBoard._id })
+      .populate('members')
+      .exec()
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
+  }
+}
+
+const addColumn = async (parent, args, context) => {
+  try {
+    const { column } = args
+    const { models } = context
+    let newColumn = new models.Column({ ...column })
+    newColumn = await newColumn.save()
+    return models.Column.findOne({ _id: newColumn._id })
+  } catch (error) {
+    console.log(error)
+    return Promise.reject(error)
+  }
+}
+
+const addStickie = async (parent, args, context) => {
+  try {
+    const { stickie } = args
+    const { models } = context
+    let newStickie = new models.Stickie({ ...stickie })
+    newStickie = await newStickie.save()
+    return models.Stickie.findOne({ _id: newStickie._id })
+  } catch (error) {
+    console.log(error)
+    return Promise.reject(error)
+  }
 }
 
 const resolvers = {
@@ -197,6 +264,11 @@ const resolvers = {
     getBoards: requireAuth(getBoards),
     getColumns: requireAuth(getColumns),
     getStickies: requireAuth(getStickies)
+  },
+  Mutation: {
+    addBoard: requireAuth(addBoard),
+    addColumn: requireAuth(addColumn),
+    addStickie: requireAuth(addStickie)
   }
 }
 
