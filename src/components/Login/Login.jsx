@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { useFormState } from '../../hooks'
 import { login as loginQuery } from '../../queries'
-import useStyles from './styles'
+import styles from './Login.module.css'
 
 const loginFetcher = (query, email, password) =>
   fetch('/api/graphql', {
@@ -48,9 +48,8 @@ const onSubmit = (event, values, config) => {
 }
 
 const LoginError = () => {
-  const classes = useStyles()
   return (
-    <div className={classes.loginError}>
+    <div className={styles.loginError}>
       <Typography variant='caption' color='error'>
         please check your credentials
       </Typography>
@@ -60,7 +59,6 @@ const LoginError = () => {
 
 const LoginForm = () => {
   const router = useRouter()
-  const classes = useStyles()
   const [cookies, setCookie] = useCookies(['token'])
 
   const {
@@ -96,16 +94,16 @@ const LoginForm = () => {
   }
 
   return (
-    <div className={clsx('login-container', classes.root)}>
-      <Typography variant='h4' classes={{ h4: classes.title }}>
+    <div className={clsx('login-container', styles.root)}>
+      <Typography variant='h4' classes={{ h4: styles.title }}>
         Sign In
       </Typography>
       <form
-        className={classes.form}
+        className={styles.form}
         onSubmit={(event) => onSubmit(event, values, { setErrors, setPending })}
       >
         <TextField
-          classes={{ root: classes.input }}
+          classes={{ root: styles.input }}
           type='email'
           name='email'
           placeholder='email'
@@ -117,7 +115,7 @@ const LoginForm = () => {
           variant='outlined'
         />
         <TextField
-          classes={{ root: classes.input }}
+          classes={{ root: styles.input }}
           type='password'
           name='password'
           placeholder='password'
@@ -130,14 +128,14 @@ const LoginForm = () => {
         />
         {!pending && !!errors && !!errors.auth && <LoginError />}
         {pending && (
-          <div className={classes.progressBar}>
+          <div className={styles.progressBar}>
             <LinearProgress />
           </div>
         )}
-        <div className={classes.submitButtonWrapper}>
+        <div className={styles.submitButtonWrapper}>
           <Button
             fullWidth
-            classes={{ root: classes.button }}
+            classes={{ root: styles.button }}
             color='primary'
             variant='contained'
             type='submit'
