@@ -7,13 +7,13 @@
     "npm": "6.14.8"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "env-cmd next dev",
+    "build": "env-cmd next build",
+    "start": "env-cmd next start",
     "test": "eslint .",
     "db:up": "docker-compose up --build -d",
     "db:down": "docker-compose down",
-    "db:seed": "babel-node db/tools/seed.js"
+    "db:seed": "env-cmd babel-node db/tools/seed.js"
   },
   "dependencies": {
     "@fullhuman/postcss-purgecss": "^3.0.0",
@@ -46,6 +46,7 @@
     "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-jest": "^26.6.2",
+    "env-cmd": "^10.1.0",
     "eslint": "^7.13.0",
     "eslint-config-standard": "^16.0.1",
     "eslint-plugin-import": "^2.22.1",

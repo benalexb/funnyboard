@@ -7,6 +7,9 @@
 
 ### First-time setup
 ```bash
+# Copy .env.example file to .env
+cp .env.example .env
+
 # Install dependencies
 npm install
 

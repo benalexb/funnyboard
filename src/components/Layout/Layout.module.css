@@ -2,6 +2,6 @@
   @apply max-w-screen-xl h-full w-full ml-auto mr-auto;
 }
 
-.headerDivider {
-  width: 100%;
+.headerWrapper {
+  @apply mb-4
 }

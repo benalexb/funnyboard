@@ -344,7 +344,7 @@ const apolloServer = new ApolloServer({
     try {
       // Create a connection to the database
       mongooseConnection = await mongoose.createConnection(
-        process.env.DB_CONNECTION || 'mongodb://localhost:27017/funnyboard',
+        process.env.DB_CONNECTION,
         dbConnectionConfig
       )
       models = getModels(mongooseConnection)

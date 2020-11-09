@@ -2,7 +2,6 @@ import jwt from 'jwt-simple'
 import bcrypt from 'bcryptjs'
 
 const { CLIENT_SECRET } = process.env
-const DEV_SECRET = 'THIS_IS_AN_UNSAFE_SECRET'
 
 export const getPasswordHash = (plainTextPassword) => {
   return new Promise((resolve, reject) => {
@@ -25,11 +24,11 @@ export const resetModelCollection = async (model) => {
 export const tokenForUser = function (user) {
   const timestamp = new Date().getTime()
   const payload = { sub: user.id, iat: timestamp }
-  return jwt.encode(payload, CLIENT_SECRET || DEV_SECRET)
+  return jwt.encode(payload, CLIENT_SECRET)
 }
 
 export const decodeToken = function (token) {
-  return jwt.decode(token, CLIENT_SECRET || DEV_SECRET)
+  return jwt.decode(token, CLIENT_SECRET)
 }
 
 export const isAuthenticated = async (token, models) => {

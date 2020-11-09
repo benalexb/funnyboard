@@ -1,8 +1,0 @@
-.backdrop.backdrop {
-  @apply z-10 text-white items-end;
-}
-
-.loader {
-  @apply absolute;
-  top: 30%;
-}

@@ -75,6 +75,13 @@ const LoginForm = () => {
 
   useEffect(
     () => {
+      cookies.token && cookies.token.length && router.push('/')
+    },
+    [cookies]
+  )
+
+  useEffect(
+    () => {
       if (loginError || (loginResponse && loginResponse.errors)) {
         setErrors({ auth: true })
         setPending(false)
