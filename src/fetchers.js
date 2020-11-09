@@ -36,3 +36,14 @@ export const columnsFetcher = (query, board) =>
   })
     .then((res) => res.json())
     .then((json) => json.data.getColumns)
+
+export const stickieFetcher = (query, column) =>
+  fetch(baseURL, {
+    ...baseConfig,
+    body: JSON.stringify({
+      query,
+      variables: { column }
+    })
+  })
+    .then((res) => res.json())
+    .then((json) => json.data.getStickies)

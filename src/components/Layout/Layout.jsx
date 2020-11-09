@@ -13,7 +13,7 @@ const Layout = ({ children, user }) => {
       <div className={styles.headerWrapper}>
         <Header user={user} />
       </div>
-      <Container>
+      <Container maxWidth={false}>
         {children}
       </Container>
     </div>

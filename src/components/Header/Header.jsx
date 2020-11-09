@@ -11,7 +11,7 @@ const Header = ({ user }) => {
   const [, , removeCookie] = useCookies(['token'])
   return (
     <div className={styles.root}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" className={styles.title}>
             { user ? `Welcome ${user.firstName} ${user.lastName}` : null }

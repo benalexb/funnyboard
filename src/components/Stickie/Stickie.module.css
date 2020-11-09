@@ -1,0 +1,7 @@
+.stickieRoot {
+  @apply mb-4;
+}
+
+.paper {
+  @apply p-2;
+}
