@@ -1,10 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Container from '@material-ui/core/Container'
 import { useRequireAuth } from '../../hooks'
-import useStyles from './styles'
+import styles from './Layout.module.css'
 
 const Layout = ({ children }) => {
-  const classes = useStyles()
   const [token] = useRequireAuth()
 
   if (!token) {
@@ -12,13 +12,17 @@ const Layout = ({ children }) => {
   }
 
   return (
-    <div className={classes.root}>
-      <div className={classes.headerDivider} />
+    <div className={styles.root}>
+      <div className={styles.headerDivider} />
       <Container>
         {children}
       </Container>
     </div>
   )
+}
+
+Layout.propTypes = {
+  children: PropTypes.node
 }
 
 export default Layout

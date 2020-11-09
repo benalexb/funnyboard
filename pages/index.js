@@ -21,7 +21,10 @@ const IndexPage = () => {
   return (
     <Layout>
       <div>Hey there!</div>
-      <button onClick={() => removeCookie('token')}>logout</button>
+      <button
+        className='btn btn-blue'
+        onClick={() => removeCookie('token')}>logout
+      </button>
     </Layout>
   )
 }
