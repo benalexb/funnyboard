@@ -20,7 +20,7 @@ npm run db:seed
 ### How do I run the application for local development?
 ```bash
 # Start mongodb
-docker-compose up
+docker-compose up -d
 
 # Start dev server
 npm run dev

@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "standardx",
+    "test": "eslint .",
     "db:up": "docker-compose up --build -d",
     "db:down": "docker-compose down",
     "db:seed": "babel-node db/tools/seed.js"
@@ -40,28 +40,20 @@
     "babel-loader": "^8.1.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-jest": "^26.6.2",
+    "eslint": "^7.13.0",
+    "eslint-config-standard": "^16.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.21.5",
     "faker": "^5.1.0",
     "husky": "^4.3.0",
-    "lodash": "^4.17.20",
-    "standardx": "^7.0.0"
+    "lodash": "^4.17.20"
   },
   "husky": {
     "hooks": {
       "pre-commit": "npm test",
       "pre-push": "npm test"
     }
-  },
-  "standardx": {
-    "parser": "@babel/eslint-parser",
-    "env": [
-      "jest"
-    ],
-    "global": [
-      "fetch"
-    ],
-    "ignore": [
-      "node_modules",
-      "styles.js"
-    ]
   }
 }
