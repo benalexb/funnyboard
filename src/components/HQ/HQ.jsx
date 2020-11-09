@@ -31,10 +31,6 @@ const HQ = (props) => {
     [boards]
   )
 
-  console.log('------------') // bbarreto_debug
-  console.log('props.user', props.user) // bbarreto_debug
-  console.log('columns', columns) // bbarreto_debug
-
   return (
     <div className={styles.rootHQ}>
       {!!boards && (

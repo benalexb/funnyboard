@@ -13,8 +13,6 @@ const Column = ({ column }) => {
     stickieFetcher
   )
 
-  console.log('stickies', stickies) // bbarreto_debug
-
   return (
     <div className={styles.columnRoot}>
       <Paper variant="outlined" classes={{ root: styles.paper }}>

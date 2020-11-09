@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import faker from 'faker'
+import color from 'color'
 import { chunk, range, random } from 'lodash'
 import dbConnectionConfig from '../connectionConfig'
 import { getModels } from '../models'
@@ -77,7 +78,9 @@ const insertStickies = async (models, insertedColumns) => {
           title: faker.lorem.words(random(1, 4)),
           // Set a description to a random lorem ipsum sentence of 3 to 16 words
           description: faker.lorem.sentence(random(3, 16)),
-          position,
+          color: color(faker.internet.color()).fade(0.9),
+          // Use a timestamp epoch for as position value
+          position: faker.time.recent(),
           column
         })
       })

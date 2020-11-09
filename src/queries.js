@@ -56,6 +56,7 @@ export const getStickies = `
         _id
         title
         description
+        color
         column
         position
     }

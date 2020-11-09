@@ -10,6 +10,7 @@ const Stickie = ({ stickie }) => {
       <Paper
         elevation={1}
         classes={{ root: styles.paper }}
+        style={{ backgroundColor: stickie.color }}
       >
         <h3>{stickie.title}</h3>
         <p>{stickie.description}</p>

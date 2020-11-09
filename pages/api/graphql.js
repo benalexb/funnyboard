@@ -1,4 +1,5 @@
 import mongoose, { Types } from 'mongoose'
+import { DateTimeResolver } from 'graphql-scalars'
 import { serialize } from 'cookie'
 import { ApolloServer, gql, AuthenticationError } from 'apollo-server-micro'
 import { getModels } from '../../db/models'
@@ -8,6 +9,8 @@ import dbConnectionConfig from '../../db/connectionConfig'
 const isDev = process.env.NODE_ENV === 'development'
 
 const typeDefs = gql`
+  scalar DateTime
+
   # USER
   type User {
     _id: ID!
@@ -64,21 +67,24 @@ const typeDefs = gql`
     _id: ID!
     title: String!
     description: String!
-    position: Int!
+    color: String!
+    position: DateTime!
     column: ID!
   }
 
   input AddStickieInput {
     title: String!
     description: String!
-    position: Int!
+    color: String!
+    position: DateTime!
     column: ID!
   }
 
   input UpdateStickieInput {
     title: String
     description: String
-    position: Int
+    color: String
+    position: DateTime
     column: ID
   }
 
@@ -172,7 +178,10 @@ const getBoards = async (parent, args, context) => {
       ...(_id && { _id }),
       ...(memberID && { members: Types.ObjectId(memberID) })
     }
-    return await context.models.Board.find(queryProps).populate('members').exec()
+    return await context.models.Board
+      .find(queryProps)
+      .populate('members')
+      .exec()
   } catch (error) {
     console.error(error)
     return Promise.reject(error)
@@ -326,7 +335,8 @@ const resolvers = {
     updateBoard: requireAuth(updateBoard),
     updateColumn: requireAuth(updateColumn),
     updateStickie: requireAuth(updateStickie)
-  }
+  },
+  DateTime: DateTimeResolver
 }
 
 const apolloServer = new ApolloServer({
