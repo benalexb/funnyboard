@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import absoluteUrl from 'next-absolute-url'
 import Layout from '../src/components/Layout'
 import HQ from '../src/components/HQ'
-import { getUser } from '../src/queries'
+import { getUser, getBoards } from '../src/queries'
 import { decodeToken } from '../db/tools/utils'
 
 const IndexPage = (props) => (
@@ -13,7 +13,8 @@ const IndexPage = (props) => (
 )
 
 IndexPage.propTypes = {
-  user: PropTypes.object
+  user: PropTypes.object,
+  boards: PropTypes.arrayOf(PropTypes.object)
 }
 
 export async function getServerSideProps ({ req, res }) {
@@ -37,13 +38,27 @@ export async function getServerSideProps ({ req, res }) {
       // Fetch User
       const userResponse = await fetch(host, {
         ...fetchConfigs,
-        body: JSON.stringify({ query: getUser, variables: { id: userId } })
+        body: JSON.stringify({
+          query: getUser,
+          variables: { id: userId }
+        })
       })
+
+      // Fetch boards
+      const boardsResponse = await fetch(host, {
+        ...fetchConfigs,
+        body: JSON.stringify({
+          query: getBoards,
+          variables: { memberID: userId }
+        })
+      })
+
       const userJSON = await userResponse.json()
-
-      // bbarreto_dev: TODO fetch boards and stickies
-
-      propPayload.props = { user: userJSON.data.getUser }
+      const boardsJSON = await boardsResponse.json()
+      propPayload.props = {
+        user: userJSON.data.getUser,
+        boards: boardsJSON.data.getBoards
+      }
     } else {
       // Redirect to login page if not authenticated
       res.setHeader('location', '/login')
