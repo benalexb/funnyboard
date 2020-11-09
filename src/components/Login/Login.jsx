@@ -78,12 +78,14 @@ const LoginForm = () => {
       if (loginError || (loginResponse && loginResponse.errors)) {
         setErrors({ auth: true })
         setPending(false)
-      } else if (loginResponse && loginResponse.data) {
-        if (!cookies.token) {
+      } else if (loginResponse) {
+        if (loginResponse.data && !cookies.token) {
+          // Login successful
           setCookie('token', loginResponse.data.login.token)
+          router.push('/')
+        } else {
+          setPending(false)
         }
-        router.push('/')
-        setPending(false)
       }
     },
     [loginResponse, loginError]

@@ -5,11 +5,7 @@ import { useRequireAuth } from '../../hooks'
 import styles from './Layout.module.css'
 
 const Layout = ({ children }) => {
-  const [token] = useRequireAuth()
-
-  if (!token) {
-    return null
-  }
+  useRequireAuth()
 
   return (
     <div className={styles.root}>
