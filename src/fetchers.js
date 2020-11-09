@@ -15,13 +15,24 @@ export const userFetcher = (query, id) =>
     .then((res) => res.json())
     .then((json) => json.data.getUser)
 
-export const boardsFetcher = (query, id) =>
+export const boardsFetcher = (query, memberID) =>
   fetch(baseURL, {
     ...baseConfig,
     body: JSON.stringify({
       query,
-      variables: { memberID: id }
+      variables: { memberID }
     })
   })
     .then((res) => res.json())
     .then((json) => json.data.getBoards)
+
+export const columnsFetcher = (query, board) =>
+  fetch(baseURL, {
+    ...baseConfig,
+    body: JSON.stringify({
+      query,
+      variables: { board }
+    })
+  })
+    .then((res) => res.json())
+    .then((json) => json.data.getColumns)

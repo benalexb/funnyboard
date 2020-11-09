@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import absoluteUrl from 'next-absolute-url'
 import Layout from '../src/components/Layout'
 import HQ from '../src/components/HQ'
-import { getUser, getBoards } from '../src/queries'
 import { decodeToken } from '../db/tools/utils'
+import { getUser, getBoards } from '../src/queries'
 
 const IndexPage = (props) => (
   <Layout user={props.user}>
