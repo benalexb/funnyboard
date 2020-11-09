@@ -5,23 +5,24 @@ import Header from '../Header'
 import { useRequireAuth } from '../../hooks'
 import styles from './Layout.module.css'
 
-const Layout = (props) => {
+const Layout = ({ children, user }) => {
   useRequireAuth()
 
   return (
     <div className={styles.root}>
       <div className={styles.headerWrapper}>
-        <Header />
+        <Header user={user} />
       </div>
       <Container>
-        {props.children}
+        {children}
       </Container>
     </div>
   )
 }
 
 Layout.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  user: PropTypes.object
 }
 
 export default Layout

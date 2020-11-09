@@ -2,18 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import useSWR from 'swr'
 import { getUser } from '../../queries'
+import { userFetcher } from '../../fetchers'
 
-const fetcher = (query, id) =>
-  fetch('/api/graphql', {
-    method: 'POST',
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify({ query, variables: { id } })
-  })
-    .then((res) => res.json())
-    .then((json) => json.data)
-
-const HQ = (props) => {
-  const { data } = useSWR([getUser, '5fa8783597e9c42cb36de632'], fetcher, { initialData: props.data })
+const HQ = ({ user }) => {
+  const { data } = useSWR([getUser, user && user._id], userFetcher, { initialData: user })
 
   return (
     <div className="HQ">
@@ -23,7 +15,7 @@ const HQ = (props) => {
 }
 
 HQ.propTypes = {
-  data: PropTypes.object
+  user: PropTypes.object
 }
 
 export default HQ
