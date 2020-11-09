@@ -1,0 +1,7 @@
+.columnRoot {
+  width: 280px;
+}
+
+.paper {
+  @apply m-2 p-2;
+}

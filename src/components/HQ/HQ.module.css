@@ -1,3 +1,9 @@
-.formControl {
-  min-width: 120px;
+.rootHQ {}
+
+.rootHQ > .formControl {
+  @apply mb-2;
+}
+
+.boardPane {
+  @apply flex flex-row w-full h-full bg-gray-100 p-4 justify-between whitespace-no-wrap overflow-x-scroll;
 }

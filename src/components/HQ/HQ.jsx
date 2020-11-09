@@ -6,6 +6,7 @@ import FormControl from '@material-ui/core/FormControl'
 import NativeSelect from '@material-ui/core/NativeSelect'
 import { getBoards, getColumns } from '../../queries'
 import { boardsFetcher, columnsFetcher } from '../../fetchers'
+import Column from '../Column'
 import styles from './HQ.module.css'
 
 const HQ = (props) => {
@@ -35,7 +36,7 @@ const HQ = (props) => {
   console.log('columns', columns) // bbarreto_debug
 
   return (
-    <div className="HQ">
+    <div className={styles.rootHQ}>
       {!!boards && (
         <FormControl className={styles.formControl}>
           <InputLabel htmlFor="age-native-helper">
@@ -52,16 +53,11 @@ const HQ = (props) => {
           </NativeSelect>
         </FormControl>
       )}
-      <ul>
+      <div className={styles.boardPane}>
         {!!columns && columns.map((column) => {
-          return (
-            <li key={column._id}>
-              <span>{column.title}</span>
-              <span> - {column.description}</span>
-            </li>
-          )
+          return <Column key={column._id} column={column} />
         })}
-      </ul>
+      </div>
     </div>
   )
 }
