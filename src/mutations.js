@@ -14,7 +14,7 @@ export const addBoard = `
 `
 
 export const addColumn = `
-  addColumn($column: AddColumnInput) {
+  mutation addColumn($column: AddColumnInput) {
     addColumn(column: $column) {
       _id
       title
@@ -26,7 +26,7 @@ export const addColumn = `
 `
 
 export const addStickie = `
-  addStickie($stickie: AddStickieInput) {
+  mutation addStickie($stickie: AddStickieInput) {
     addStickie(stickie: $stickie) {
       _id
       title

@@ -1,25 +1,23 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
+import { mutate } from 'swr'
+import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
+import Select from '@material-ui/core/Select'
+import InputLabel from '@material-ui/core/InputLabel'
 import Typography from '@material-ui/core/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Button from '@material-ui/core/Button'
 import { TwitterPicker } from 'react-color'
 import { useFormState } from '../../hooks'
+import { getStickies } from '../../queries'
+import { updateStickie, addStickie } from '../../mutations'
+import { baseURL, baseConfig } from '../../fetchers'
+import { COLORS } from '../../../db/tools/data'
 import styles from './StickieForm.module.css'
 
-const COLORS = [
-  '#EB9694',
-  '#FAD0C3',
-  '#FEF3BD',
-  '#C1E1C5',
-  '#BEDADC',
-  '#C4DEF6',
-  '#BED3F3'
-]
-
-const StickieForm = ({ stickieRecord, onCloseModal }) => {
+const StickieForm = ({ columns, stickieRecord, onCloseModal, originColumn }) => {
   const {
     errors,
     pending,
@@ -30,21 +28,57 @@ const StickieForm = ({ stickieRecord, onCloseModal }) => {
   } = useFormState({
     title: (stickieRecord && stickieRecord.title) || '',
     description: (stickieRecord && stickieRecord.description) || '',
+    column: (stickieRecord && stickieRecord.column) || originColumn,
     color: (stickieRecord && stickieRecord.color) || COLORS[0],
     position: (stickieRecord && stickieRecord.position) || new Date().toISOString()
   })
   const [isDeleting, setDeleting] = useState(false)
 
-  console.log(stickieRecord) // bbarreto_debug
-
   const handleColorChange = ({ hex }) => {
     setValues({ ...values, color: hex })
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     setPending(true)
-    console.log('Form submitted!') // bbarreto_dev
+
+    try {
+      if (stickieRecord) {
+        // A record is being updated. Issue a request to update the stickie
+        await fetch(baseURL, {
+          ...baseConfig,
+          body: JSON.stringify({
+            query: updateStickie,
+            variables: {
+              id: stickieRecord._id,
+              stickieProps: { ...values }
+            }
+          })
+        })
+
+        // Trigger a revalidation (refetch) of stickies for this particular column
+        mutate([getStickies, stickieRecord.column])
+
+        if (stickieRecord.column !== values.column) {
+          // Column has been updated, so we must trigger a revalidation for the new column as well
+          mutate([getStickies, values.column])
+        }
+      } else {
+        // A record is being created. Issue a request to create a stickie
+        await fetch(baseURL, {
+          ...baseConfig,
+          body: JSON.stringify({
+            query: addStickie,
+            variables: { stickie: { ...values } }
+          })
+        })
+        mutate([getStickies, values.column])
+      }
+      onCloseModal()
+    } catch (error) {
+      console.error(error)
+      setPending(false)
+    }
   }
 
   const onDeleteAttempt = (event) => {
@@ -89,6 +123,24 @@ const StickieForm = ({ stickieRecord, onCloseModal }) => {
           value={values.description}
           variant='outlined'
         />
+        <FormControl classes={{ root: styles.input }}>
+          <InputLabel htmlFor='owner-select'>Column</InputLabel>
+          <Select
+            native
+            disabled={pending}
+            value={values.column}
+            onChange={(event) => setValues({ ...values, column: event.target.value })}
+            inputProps={{ name: 'owner', id: 'owner-select' }}
+          >
+            {
+              columns.map(({ _id, title }) => (
+                <option key={_id} value={_id}>
+                  {title}
+                </option>
+              ))
+            }
+          </Select>
+        </FormControl>
         <div className={styles.colorPicker}>
           <TwitterPicker
             triangle="hide"
@@ -153,7 +205,9 @@ const StickieForm = ({ stickieRecord, onCloseModal }) => {
 
 StickieForm.propTypes = {
   stickieRecord: PropTypes.object,
-  onCloseModal: PropTypes.func
+  onCloseModal: PropTypes.func,
+  originColumn: PropTypes.string,
+  columns: PropTypes.arrayOf(PropTypes.object)
 }
 
 export default StickieForm

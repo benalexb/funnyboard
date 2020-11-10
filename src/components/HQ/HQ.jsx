@@ -18,6 +18,7 @@ const HQ = (props) => {
   const [isModalOpen, setModalOpen] = useState(false)
   const [selectedBoard, setSelectedBoard] = useState('')
   const [selectedStickie, setSelectedStickie] = useState(null)
+  const [originColumn, setOriginColumn] = useState(null)
 
   const { data: boards } = useSWR(
     [getBoards, props.user && props.user._id],
@@ -40,6 +41,7 @@ const HQ = (props) => {
 
   const onCloseModal = () => {
     setModalOpen(false)
+    setOriginColumn(null)
     setSelectedStickie(null)
   }
 
@@ -68,6 +70,7 @@ const HQ = (props) => {
             column={column}
             onCloseModal={onCloseModal}
             setModalOpen={setModalOpen}
+            setOriginColumn={setOriginColumn}
             setSelectedStickie={setSelectedStickie}
           />
         ))}
@@ -83,6 +86,8 @@ const HQ = (props) => {
         <Fade in={isModalOpen}>
           <Paper classes={{ root: styles.modalPaper }}>
             <StickieForm
+              columns={columns}
+              originColumn={originColumn}
               stickieRecord={selectedStickie}
               onCloseModal={onCloseModal}
             />

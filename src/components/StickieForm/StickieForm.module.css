@@ -1,5 +1,9 @@
 .stickieFormRoot {
-  @apply flex flex-col items-center;
+  @apply flex flex-col items-center p-3;
+}
+
+.formTitle {
+  @apply mb-2;
 }
 
 .form {

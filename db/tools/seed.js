@@ -1,64 +1,12 @@
 import mongoose from 'mongoose'
 import faker from 'faker'
-import color from 'color'
 import { chunk, range, random } from 'lodash'
 import dbConnectionConfig from '../connectionConfig'
 import { getModels } from '../models'
 import { resetModelCollection, getPasswordHash } from './utils'
+import { USERS, BOARDS, COLUMNS, COLORS } from './data'
 
 let mongooseConnection = null
-
-const USERS = [
-  {
-    email: 'dev@domain.com',
-    password: 'qwe123',
-    firstName: 'Benjamin',
-    lastName: 'Sisko'
-  },
-  {
-    email: 'dev2@domain.com',
-    password: 'qwe123',
-    firstName: 'Kathryn',
-    lastName: 'Janeway'
-  },
-  {
-    email: 'dev3@domain.com',
-    password: 'qwe123',
-    firstName: 'Jean-Luc',
-    lastName: 'Picard'
-  }
-]
-
-const BOARDS = [
-  'Borg Cube',
-  'USS Enterprise',
-  'USS Voyager',
-  'Klingon Bird-of-Prey',
-  'Romulan Warbird',
-  'Deep Space 9',
-  'USS Vengeance',
-  'USS Prometheus',
-  'Species 8472 Bio-Ship'
-]
-
-const COLUMNS = [
-  {
-    title: 'Action Items',
-    description: ''
-  },
-  {
-    title: 'Works for us',
-    description: 'What should we continue doing?'
-  },
-  {
-    title: 'Requires Improvement',
-    description: 'What should we do differently?'
-  },
-  {
-    title: 'Suggestions',
-    description: 'No idea is a bad idea'
-  }
-]
 
 const announce = (message) => console.log(`\n# ${message} #\n`)
 
@@ -78,9 +26,9 @@ const insertStickies = async (models, insertedColumns) => {
           title: faker.lorem.words(random(1, 4)),
           // Set a description to a random lorem ipsum sentence of 3 to 16 words
           description: faker.lorem.sentence(random(3, 16)),
-          color: color(faker.internet.color()).fade(0.9),
+          color: COLORS[random(0, COLORS.length - 1)],
           // Use a timestamp epoch for as position value
-          position: new Date().getTime() + random(60000 * 50, 60000 * 500),
+          position: new Date().getTime() - random(60000 * 50, 60000 * 5000),
           column
         })
       })

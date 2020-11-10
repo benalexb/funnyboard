@@ -1,5 +1,5 @@
-const baseURL = '/api/graphql'
-const baseConfig = {
+export const baseURL = '/api/graphql'
+export const baseConfig = {
   method: 'POST',
   headers: { 'Content-type': 'application/json' }
 }
