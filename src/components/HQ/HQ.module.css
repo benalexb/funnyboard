@@ -6,6 +6,7 @@
 
 .boardPane {
   @apply flex flex-row w-full h-full bg-gray-100 p-4 justify-between whitespace-no-wrap overflow-x-scroll;
+  border-radius: 4px;
 }
 
 .modal {
@@ -16,4 +17,5 @@
   @apply p-2;
   margin: 25% auto 0;
   max-width: 800px;
+  width: fit-content;
 }

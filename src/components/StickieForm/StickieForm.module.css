@@ -1,0 +1,21 @@
+.stickieFormRoot {
+  @apply flex flex-col items-center;
+}
+
+.form {
+  @apply flex flex-col;
+}
+
+.input:first-child {
+  @apply mt-4;
+}
+
+.input.input {
+  @apply mb-4;
+}
+
+.colorPicker {
+  @apply mb-4;
+}
+
+.actionPane {}

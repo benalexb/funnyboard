@@ -14,7 +14,7 @@ const Header = ({ user }) => {
       <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" className={styles.title}>
-            { user ? `Welcome ${user.firstName} ${user.lastName}` : null }
+            { user ? `${user.firstName} ${user.lastName}` : null }
           </Typography>
           <Button color="inherit" onClick={() => removeCookie('token')}>
             Logout

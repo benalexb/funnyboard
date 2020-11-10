@@ -8,14 +8,16 @@ import Modal from '@material-ui/core/Modal'
 import Fade from '@material-ui/core/Fade'
 import Paper from '@material-ui/core/Paper'
 import Backdrop from '@material-ui/core/Backdrop'
+import Column from '../Column'
+import StickieForm from '../StickieForm'
 import { getBoards, getColumns } from '../../queries'
 import { boardsFetcher, columnsFetcher } from '../../fetchers'
-import Column from '../Column'
 import styles from './HQ.module.css'
 
 const HQ = (props) => {
   const [isModalOpen, setModalOpen] = useState(false)
   const [selectedBoard, setSelectedBoard] = useState('')
+  const [selectedStickie, setSelectedStickie] = useState(null)
 
   const { data: boards } = useSWR(
     [getBoards, props.user && props.user._id],
@@ -38,6 +40,7 @@ const HQ = (props) => {
 
   const onCloseModal = () => {
     setModalOpen(false)
+    setSelectedStickie(null)
   }
 
   return (
@@ -59,9 +62,14 @@ const HQ = (props) => {
         </FormControl>
       )}
       <div className={styles.boardPane}>
-        {!!columns && columns.map((column) => {
-          return <Column key={column._id} column={column} setModalOpen={setModalOpen} />
-        })}
+        {!!columns && columns.map((column) => (
+          <Column
+            key={column._id}
+            column={column}
+            setModalOpen={setModalOpen}
+            setSelectedStickie={setSelectedStickie}
+          />
+        ))}
       </div>
       <Modal
         className={styles.modal}
@@ -73,7 +81,7 @@ const HQ = (props) => {
       >
         <Fade in={isModalOpen}>
           <Paper classes={{ root: styles.modalPaper }}>
-            Add a form here!
+            <StickieForm stickieRecord={selectedStickie} />
           </Paper>
         </Fade>
       </Modal>

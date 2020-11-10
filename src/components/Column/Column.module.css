@@ -14,11 +14,11 @@
 }
 
 .header {
-  @apply mt-3 mb-1;
+  @apply mt-1 mb-2;
 }
 
 .addButton {
-  @apply mb-3;
+  @apply my-2;
 }
 
 .title,

@@ -5,7 +5,7 @@ import styles from './Stickie.module.css'
 
 const Stickie = ({ stickie, onStickieClick }) => {
   const handleClick = () => {
-    onStickieClick && onStickieClick()
+    onStickieClick && onStickieClick(stickie)
   }
 
   return (

@@ -8,7 +8,7 @@ import { getStickies } from '../../queries'
 import { stickieFetcher } from '../../fetchers'
 import styles from './Column.module.css'
 
-const Column = ({ column, setModalOpen }) => {
+const Column = ({ column, setModalOpen, setSelectedStickie }) => {
   const { data: stickies } = useSWR(
     column ? [getStickies, column._id] : null,
     stickieFetcher
@@ -18,13 +18,17 @@ const Column = ({ column, setModalOpen }) => {
     setModalOpen(true)
   }
 
-  const handleStickieClick = () => {
+  const handleStickieClick = (stickie) => {
     setModalOpen(true)
+    setSelectedStickie(stickie)
   }
 
   return (
     <div className={styles.columnRoot}>
       <Paper variant="outlined" classes={{ root: styles.paper }}>
+        <div className={styles.addButton}>
+          <AddButton onClick={handleButtonClick} />
+        </div>
         <div className={styles.header}>
           <h2 className={styles.title}>
             {column.title}
@@ -33,13 +37,14 @@ const Column = ({ column, setModalOpen }) => {
             {column.description}
           </p>
         </div>
-        <div className={styles.addButton}>
-          <AddButton onClick={handleButtonClick} />
-        </div>
         <div className={styles.body}>
-          {!!stickies && !!stickies.length && stickies.map((stickie) => {
-            return <Stickie key={stickie._id} stickie={stickie} onStickieClick={handleStickieClick} />
-          })}
+          {!!stickies && !!stickies.length && stickies.map((stickie) => (
+            <Stickie
+              key={stickie._id}
+              stickie={stickie}
+              onStickieClick={handleStickieClick}
+            />
+          ))}
         </div>
       </Paper>
     </div>
@@ -48,7 +53,8 @@ const Column = ({ column, setModalOpen }) => {
 
 Column.propTypes = {
   column: PropTypes.object,
-  setModalOpen: PropTypes.func
+  setModalOpen: PropTypes.func,
+  setSelectedStickie: PropTypes.func
 }
 
 export default Column
