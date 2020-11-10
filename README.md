@@ -41,3 +41,16 @@ npm run db:down
 # Or
 docker-compose down
 ```
+
+### How do I run end to end tests?
+```bash
+# Start mongodb
+docker-compose up -d
+
+# Start dev server
+npm run dev
+
+# Run the tests
+npm run test
+```
+E2E tests are set up to run "headful" (will explicitly open a chromium window) for demo purposes.

@@ -13,7 +13,7 @@ const Header = ({ user }) => {
     <div className={styles.root}>
       <AppBar position="fixed">
         <Toolbar>
-          <Typography variant="h6" className={styles.title}>
+          <Typography id="app-header" variant="h6" className={styles.title}>
             { user ? `${user.firstName} ${user.lastName}` : null }
           </Typography>
           <Button color="inherit" onClick={() => removeCookie('token')}>

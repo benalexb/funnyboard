@@ -112,6 +112,7 @@ const LoginForm = () => {
         onSubmit={(event) => onSubmit(event, values, { setErrors, setPending })}
       >
         <TextField
+          id='login-email'
           classes={{ root: styles.input }}
           type='email'
           name='email'
@@ -124,6 +125,7 @@ const LoginForm = () => {
           variant='outlined'
         />
         <TextField
+          id='login-password'
           classes={{ root: styles.input }}
           type='password'
           name='password'
@@ -143,6 +145,7 @@ const LoginForm = () => {
         )}
         <div className={styles.submitButtonWrapper}>
           <Button
+            id='login-button'
             fullWidth
             classes={{ root: styles.button }}
             color='primary'
