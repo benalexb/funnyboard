@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer'
 
 let browser, page
 
-describe('Google', () => {
+describe('FannyBoard', () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({ headless: false })
     page = await browser.newPage()
