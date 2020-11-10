@@ -8,11 +8,19 @@ import { getStickies } from '../../queries'
 import { stickieFetcher } from '../../fetchers'
 import styles from './Column.module.css'
 
-const Column = ({ column }) => {
+const Column = ({ column, setModalOpen }) => {
   const { data: stickies } = useSWR(
     column ? [getStickies, column._id] : null,
     stickieFetcher
   )
+
+  const handleButtonClick = () => {
+    setModalOpen(true)
+  }
+
+  const handleStickieClick = () => {
+    setModalOpen(true)
+  }
 
   return (
     <div className={styles.columnRoot}>
@@ -26,11 +34,11 @@ const Column = ({ column }) => {
           </p>
         </div>
         <div className={styles.addButton}>
-          <AddButton onClick={() => console.log('Clicked!')} />
+          <AddButton onClick={handleButtonClick} />
         </div>
         <div className={styles.body}>
           {!!stickies && !!stickies.length && stickies.map((stickie) => {
-            return <Stickie key={stickie._id} stickie={stickie} />
+            return <Stickie key={stickie._id} stickie={stickie} onStickieClick={handleStickieClick} />
           })}
         </div>
       </Paper>
@@ -39,7 +47,8 @@ const Column = ({ column }) => {
 }
 
 Column.propTypes = {
-  column: PropTypes.object
+  column: PropTypes.object,
+  setModalOpen: PropTypes.func
 }
 
 export default Column

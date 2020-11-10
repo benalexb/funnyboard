@@ -3,10 +3,13 @@ import PropTypes from 'prop-types'
 import Paper from '@material-ui/core/Paper'
 import styles from './Stickie.module.css'
 
-const Stickie = ({ stickie }) => {
-  console.log('stickie', stickie)
+const Stickie = ({ stickie, onStickieClick }) => {
+  const handleClick = () => {
+    onStickieClick && onStickieClick()
+  }
+
   return (
-    <div className={styles.stickieRoot}>
+    <div className={styles.stickieRoot} onClick={handleClick}>
       <Paper
         elevation={1}
         classes={{ root: styles.paper }}
@@ -27,7 +30,8 @@ const Stickie = ({ stickie }) => {
 }
 
 Stickie.propTypes = {
-  stickie: PropTypes.object
+  stickie: PropTypes.object,
+  onStickieClick: PropTypes.func
 }
 
 export default Stickie

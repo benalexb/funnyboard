@@ -4,12 +4,17 @@ import useSWR from 'swr'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import NativeSelect from '@material-ui/core/NativeSelect'
+import Modal from '@material-ui/core/Modal'
+import Fade from '@material-ui/core/Fade'
+import Paper from '@material-ui/core/Paper'
+import Backdrop from '@material-ui/core/Backdrop'
 import { getBoards, getColumns } from '../../queries'
 import { boardsFetcher, columnsFetcher } from '../../fetchers'
 import Column from '../Column'
 import styles from './HQ.module.css'
 
 const HQ = (props) => {
+  const [isModalOpen, setModalOpen] = useState(false)
   const [selectedBoard, setSelectedBoard] = useState('')
 
   const { data: boards } = useSWR(
@@ -31,6 +36,10 @@ const HQ = (props) => {
     [boards]
   )
 
+  const onCloseModal = () => {
+    setModalOpen(false)
+  }
+
   return (
     <div className={styles.rootHQ}>
       {!!boards && (
@@ -51,9 +60,23 @@ const HQ = (props) => {
       )}
       <div className={styles.boardPane}>
         {!!columns && columns.map((column) => {
-          return <Column key={column._id} column={column} />
+          return <Column key={column._id} column={column} setModalOpen={setModalOpen} />
         })}
       </div>
+      <Modal
+        className={styles.modal}
+        open={isModalOpen}
+        onClose={onCloseModal}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{ timeout: 125 }}
+      >
+        <Fade in={isModalOpen}>
+          <Paper classes={{ root: styles.modalPaper }}>
+            Add a form here!
+          </Paper>
+        </Fade>
+      </Modal>
     </div>
   )
 }
