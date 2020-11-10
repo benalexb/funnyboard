@@ -317,6 +317,15 @@ const updateStickie = async (parent, args, context) => {
   }
 }
 
+const removeStickie = async (parent, args, context) => {
+  try {
+    return await context.models.Stickie.findByIdAndRemove(args.id)
+  } catch (error) {
+    console.error(error)
+    return Promise.reject(error)
+  }
+}
+
 const resolvers = {
   Query: {
     login,
@@ -334,7 +343,10 @@ const resolvers = {
     // Update
     updateBoard: requireAuth(updateBoard),
     updateColumn: requireAuth(updateColumn),
-    updateStickie: requireAuth(updateStickie)
+    updateStickie: requireAuth(updateStickie),
+
+    // Delete
+    removeStickie: requireAuth(removeStickie)
   },
   DateTime: DateTimeResolver
 }

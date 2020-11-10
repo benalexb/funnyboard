@@ -32,6 +32,10 @@
   @apply bg-red-300;
 }
 
+.permDeleteButton.permDeleteButton:hover {
+  @apply bg-red-400;
+}
+
 .hidden {
   visibility: hidden;
 }

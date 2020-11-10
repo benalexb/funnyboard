@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button'
 import { TwitterPicker } from 'react-color'
 import { useFormState } from '../../hooks'
 import { getStickies } from '../../queries'
-import { updateStickie, addStickie } from '../../mutations'
+import { updateStickie, addStickie, removeStickie } from '../../mutations'
 import { baseURL, baseConfig } from '../../fetchers'
 import { COLORS } from '../../../db/tools/data'
 import styles from './StickieForm.module.css'
@@ -86,8 +86,24 @@ const StickieForm = ({ columns, stickieRecord, onCloseModal, originColumn }) => 
     setDeleting(true)
   }
 
-  const onDelete = () => {
-    console.log('Trying to delete...') // bbarreto_dev
+  const onDelete = async (event) => {
+    event.preventDefault()
+    setPending(true)
+
+    try {
+      await fetch(baseURL, {
+        ...baseConfig,
+        body: JSON.stringify({
+          query: removeStickie,
+          variables: { id: stickieRecord._id }
+        })
+      })
+      mutate([getStickies, stickieRecord.column])
+      onCloseModal()
+    } catch (error) {
+      console.error(error)
+      setPending(false)
+    }
   }
 
   return (
@@ -178,7 +194,7 @@ const StickieForm = ({ columns, stickieRecord, onCloseModal, originColumn }) => 
             >
               Cancel
             </Button>
-            {!isDeleting && (
+            {!isDeleting && !!stickieRecord && (
               <Button
                 classes={{ root: styles.actionButton }}
                 onClick={onDeleteAttempt}

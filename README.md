@@ -27,8 +27,13 @@ docker-compose up -d
 
 # Start dev server
 npm run dev
+
+# ready - started server on http://localhost:3000
 ```
-Development page found at [http://localhost:3000](http://localhost:3000)
+Per the seeding script found in this project, here are a few credentials that can be used to authenticate.
+1. `dev@domain.com / qwe123`
+2. `dev2@domain.com / qwe123`
+3. `dev3@domain.com / qwe123`
 
 ### How do I stop the database?
 ```bash

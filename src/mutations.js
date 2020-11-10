@@ -75,3 +75,12 @@ export const updateStickie = `
     }
   }
 `
+
+export const removeStickie = `
+  mutation removeStickie($id: ID!) {
+    removeStickie(id: $id) {
+      _id
+      column
+    }
+  }
+`
