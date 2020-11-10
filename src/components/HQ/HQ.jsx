@@ -66,6 +66,7 @@ const HQ = (props) => {
           <Column
             key={column._id}
             column={column}
+            onCloseModal={onCloseModal}
             setModalOpen={setModalOpen}
             setSelectedStickie={setSelectedStickie}
           />
@@ -81,7 +82,10 @@ const HQ = (props) => {
       >
         <Fade in={isModalOpen}>
           <Paper classes={{ root: styles.modalPaper }}>
-            <StickieForm stickieRecord={selectedStickie} />
+            <StickieForm
+              stickieRecord={selectedStickie}
+              onCloseModal={onCloseModal}
+            />
           </Paper>
         </Fade>
       </Modal>

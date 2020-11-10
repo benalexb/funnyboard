@@ -6,16 +6,28 @@
   @apply flex flex-col;
 }
 
-.input:first-child {
-  @apply mt-4;
-}
-
-.input.input {
-  @apply mb-4;
-}
-
+.input:first-child,
+.input.input,
 .colorPicker {
   @apply mb-4;
 }
 
-.actionPane {}
+.loaderWrapper {
+  @apply mt-1 mb-4;
+}
+
+.actionPane {
+  @apply flex justify-between;
+}
+
+.actionButton:not(:first-child) {
+  margin-left: 8px;
+}
+
+.permDeleteButton.permDeleteButton {
+  @apply bg-red-300;
+}
+
+.hidden {
+  visibility: hidden;
+}

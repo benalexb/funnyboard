@@ -15,12 +15,13 @@ const Column = ({ column, setModalOpen, setSelectedStickie }) => {
   )
 
   const handleButtonClick = () => {
+    setSelectedStickie(null)
     setModalOpen(true)
   }
 
   const handleStickieClick = (stickie) => {
-    setModalOpen(true)
     setSelectedStickie(stickie)
+    setModalOpen(true)
   }
 
   return (
