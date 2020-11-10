@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import useSWR from 'swr'
 import Paper from '@material-ui/core/Paper'
 import Stickie from '../Stickie'
+import AddButton from '../AddButton'
 import { getStickies } from '../../queries'
 import { stickieFetcher } from '../../fetchers'
 import styles from './Column.module.css'
@@ -23,6 +24,9 @@ const Column = ({ column }) => {
           <p className={styles.description}>
             {column.description}
           </p>
+        </div>
+        <div className={styles.addButton}>
+          <AddButton onClick={() => console.log('Clicked!')} />
         </div>
         <div className={styles.body}>
           {!!stickies && !!stickies.length && stickies.map((stickie) => {

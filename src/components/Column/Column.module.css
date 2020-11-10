@@ -14,7 +14,11 @@
 }
 
 .header {
-  @apply my-3;
+  @apply mt-3 mb-1;
+}
+
+.addButton {
+  @apply mb-3;
 }
 
 .title,
