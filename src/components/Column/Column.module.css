@@ -12,3 +12,17 @@
 .paper {
   @apply flex flex-col w-full p-2 items-center;
 }
+
+.header {
+  @apply my-3;
+}
+
+.title,
+.description {
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.title {
+  font-weight: 600;
+}

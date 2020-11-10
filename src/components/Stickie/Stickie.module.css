@@ -1,7 +1,28 @@
 .stickieRoot {
   @apply mb-4;
+  transition: box-shadow 200ms;
+}
+
+.stickieRoot:hover {
+  box-shadow: 0px 4px 14px -2px;
+  cursor: pointer;
 }
 
 .paper {
-  @apply p-2;
+  @apply py-3 px-4;
+}
+
+.title {
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.title,
+.timeStamp,
+.description {
+  text-align: center;
+}
+
+.description {
+  @apply my-2;
 }

@@ -17,8 +17,12 @@ const Column = ({ column }) => {
     <div className={styles.columnRoot}>
       <Paper variant="outlined" classes={{ root: styles.paper }}>
         <div className={styles.header}>
-          <h2>{column.title}</h2>
-          <p>{column.description}</p>
+          <h2 className={styles.title}>
+            {column.title}
+          </h2>
+          <p className={styles.description}>
+            {column.description}
+          </p>
         </div>
         <div className={styles.body}>
           {!!stickies && !!stickies.length && stickies.map((stickie) => {

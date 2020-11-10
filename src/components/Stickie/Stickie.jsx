@@ -12,9 +12,15 @@ const Stickie = ({ stickie }) => {
         classes={{ root: styles.paper }}
         style={{ backgroundColor: stickie.color }}
       >
-        <h3>{stickie.title}</h3>
-        <p>{stickie.description}</p>
-        <p>{stickie.position}</p>
+        <h3 className={styles.title}>
+          {stickie.title}
+        </h3>
+        <p className={styles.description}>
+          {stickie.description}
+        </p>
+        <p className={styles.timeStamp}>
+          {new Date(stickie.position).toLocaleString()}
+        </p>
       </Paper>
     </div>
   )
