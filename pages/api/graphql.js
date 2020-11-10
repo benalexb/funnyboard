@@ -215,8 +215,8 @@ const getStickies = async (parent, args, context) => {
     }
     return await context.models.Stickie
       .find(queryProps)
-      // Sort by position in ascending order
-      .sort({ position: 1 })
+      // Sort by position in descending order (newer first)
+      .sort({ position: -1 })
       .exec()
   } catch (error) {
     console.error(error)

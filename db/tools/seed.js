@@ -80,7 +80,7 @@ const insertStickies = async (models, insertedColumns) => {
           description: faker.lorem.sentence(random(3, 16)),
           color: color(faker.internet.color()).fade(0.9),
           // Use a timestamp epoch for as position value
-          position: faker.time.recent(),
+          position: new Date().getTime() + random(60000 * 50, 60000 * 500),
           column
         })
       })
